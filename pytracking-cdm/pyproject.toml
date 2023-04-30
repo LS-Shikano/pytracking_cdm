@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pytracking-cdm"
+version = "0.0.1"
+description = "Processing eyetracking data for sequence analysis"
+authors = ["Jonas Stettner <jonas.stettner@uni-konstanz.de>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.12"
+pandas = "^2.0.1"
+numpy = "^1.24.3"
+scipy = "^1.10.1"
+Levenshtein = "^0.21.0"
+
+[tool.poetry.group.test.dependencies]
+importlib-resources = "^5.12.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
