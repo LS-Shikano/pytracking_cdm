@@ -21,10 +21,12 @@ def sequence(df: pd.DataFrame,  aoi_col: str, merge: bool = False, off_aoi_str: 
     >>> sequence_csv("data/individual/inv_1.csv", "et_rois")
     """
 
+    df[aoi_col] = df[aoi_col].astype(str)
+
     if off_aoi_str != None:
         df = df[df[aoi_col] != off_aoi_str]
         
-    seq = df[aoi_col].astype(str).str.cat(sep='')
+    seq = df[aoi_col].str.cat(sep='')
 
     if merge:
         lst = [*seq]

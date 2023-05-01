@@ -12,7 +12,11 @@ def test_sequence():
     csv = files('tests.data.single_test').joinpath('test.csv')
     df = pd.read_csv(csv)
     seq = sequence(df, "aoi")
-    assert seq == "123456789"
+    assert seq == "122256889"
+    seq = sequence(df, "aoi", merge=True)
+    assert seq == "125689"
+    seq = sequence(df, "aoi", off_aoi_str="2")
+    assert seq == "156889"
 
 
 def test_sequencer_csv():    
