@@ -1,7 +1,7 @@
 from pytracking_cdm.sequencer import sequencer
 from pytracking_cdm.distance_matrix import distance_matrix
 
-def process(level,merge=False,off_ballot=True,position=True,raw=False,metric="distance",div_len=False):
+def process(**kwargs):
     """process: generates a sequence from eyetracking data and returns a distance matrix
     Params:
     ------
@@ -20,15 +20,5 @@ def process(level,merge=False,off_ballot=True,position=True,raw=False,metric="di
     >>> from pytracking_cdm import process
     >>> process(0,merge=True)
     """
-    if level == 2:
-        fix="AOI"
-    else:
-        fix="Row"
-    df = sequencer(
-        level=level,
-        folder=f"../Data/Labelled_Data/Individual_Ballots/Double{'' if raw else f'/Fixations/{fix}_Fixations/30ms'}",
-        merge=merge,
-        off_ballot=off_ballot,
-        position=position)
-
-    return  distance_matrix(df=df,metric=metric,div_len=div_len)
+    return lambda x: distance_matrix(sequencer(x))
+    
