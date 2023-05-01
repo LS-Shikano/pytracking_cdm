@@ -8,15 +8,13 @@ def test_version():
     assert __version__ == '0.1.0'
 
 
-def test_sequence_csv():
-    csv = files('tests.data.jenke_et_al').joinpath('ind_9.csv')
+def test_sequence():
+    csv = files('tests.data.single_test').joinpath('test.csv')
     df = pd.read_csv(csv)
-    seq = sequence(df, "et_rois")
-    # print(seq)
+    seq = sequence(df, "aoi")
+    assert seq == "123456789"
 
 
-def test_sequencer_csv():
-    print(files('tests.data.jenke_et_al'))
-    
-    # res = sequencer(package_path, mult_seq=True, aoi_col="et_rois")
-    # print(seq)
+def test_sequencer_csv():    
+    res = sequencer(files('tests.data.jenke_et_al')._paths[0], id_col="subjid", sep_col="trialnums", aoi_col="et_rois")
+    print(res)
