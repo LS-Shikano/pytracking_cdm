@@ -7,8 +7,7 @@ def process(**kwargs):
     distance matrix
     Params:
     ------
-    level: the level of the sequence, 0 is the level of the first sequence, 1
-    is the level of the second sequence, etc.
+    level: the level of the sequence, 0 is the level of the first sequence, 1 is the level of the second sequence, etc.
     merge: if True, the result will be a list of lists, where each sublist is
     a sequence of beads that have been merged.
     off_ballot: if True, the first bead will be the off-ballot bead, and the
