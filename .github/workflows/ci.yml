@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: poetry install 
       - name: Testing
-        run: poetry run pytest
+        run: poetry run pytest -sv
       - name: Formatting
         run: poetry run black "pytracking_cdm"
       - name: Linting
