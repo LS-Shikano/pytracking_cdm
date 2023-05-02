@@ -1,18 +1,16 @@
 import pandas as pd
-import numpy as np
 import os
-import re
-from collections.abc import Callable
 from typing import TypeVar
-PandasDataFrame = TypeVar('pandas.core.frame.DataFrame')
+
+PandasDataFrame = TypeVar("pandas.core.frame.DataFrame")
 
 
-def sequence(df: pd.DataFrame,  aoi_col: str, merge: bool = False, off_aoi_str: str = None):
+def sequence(df: pd.DataFrame, aoi_col: str, merge: bool = False):
     """sequencer: converts a csv containing row wise fixations to a sequence
     Params:
     ------
     df: pandas dataframe
-    merge: Merge contiguous identical strings 
+    merge: Merge contiguous identical strings
     off_aoi: Include off AOI rows in sequence
 
     Usage:
@@ -20,21 +18,19 @@ def sequence(df: pd.DataFrame,  aoi_col: str, merge: bool = False, off_aoi_str: 
     >>> from pytracking_cdm.sequence_csv import sequence_csv
     >>> sequence_csv("data/individual/inv_1.csv", "et_rois")
     """
+    # TODO: error handling if aoi col is not string
 
     df[aoi_col] = df[aoi_col].astype(str)
 
-    if off_aoi_str != None:
-        df = df[df[aoi_col] != off_aoi_str]
-        
-    seq = df[aoi_col].str.cat(sep='')
+    seq = df[aoi_col].str.cat(sep="")
 
     if merge:
         lst = [*seq]
         temp = []
         # merging sub sequences of identical strings to be one string
         for count, i in enumerate(lst):
-            if count != len(lst)-1:
-                if lst[count+1] != i:
+            if count != len(lst) - 1:
+                if lst[count + 1] != i:
                     temp.append(i)
             else:
                 temp.append(i)
@@ -42,21 +38,26 @@ def sequence(df: pd.DataFrame,  aoi_col: str, merge: bool = False, off_aoi_str: 
 
     return seq
 
-def gen_code_dct(df:pd.DataFrame, aoi_col:str, code_dct:dict,off_aoi_str: str= None):
-    uni_start = 35
 
-    if off_aoi_str != None:
-        code_dct[off_aoi_str]= chr(uni_start-1)
+def gen_code_dct(df: pd.DataFrame, aoi_col: str, code_dct: dict):
+    uni_start = 35
 
     new_unique_aoi = [x for x in df[aoi_col].unique().tolist() if x not in code_dct.keys()]
     lock = len(code_dct.keys())
     if len(new_unique_aoi) != 0:
-        for lst_count,i in enumerate(new_unique_aoi):
-            code_dct[i] = chr(uni_start+lock+lst_count)
+        for lst_count, i in enumerate(new_unique_aoi):
+            code_dct[i] = chr(uni_start + lock + lst_count)
     return code_dct
 
 
-def sequencer(folder: str, id_col: str, aoi_col:str, off_aoi_str: str = None, sep_col: str = None, **kwargs):
+def sequencer(
+    folder: str,
+    id_col: str,
+    aoi_col: str,
+    off_aoi_str: str = None,
+    sep_col: str = None,
+    **kwargs,
+):
     """sequencer: converts a dataframe containing row wise fixations to a sequence
     Params:
     ------
@@ -71,26 +72,28 @@ def sequencer(folder: str, id_col: str, aoi_col:str, off_aoi_str: str = None, se
     id_lst = []
     length_lst = []
     code_dct = dict()
-    
+
     with os.scandir(folder) as it:
         for entry in it:
             df = pd.read_csv(entry.path)
 
-            code_dct = gen_code_dct(df, aoi_col, code_dct, off_aoi_str)
+            if off_aoi_str is not None:
+                df = df[df[aoi_col] != off_aoi_str]
 
-            df[aoi_col] = df[aoi_col].apply(lambda x : code_dct[x])
-            
-            if sep_col != None:
+            code_dct = gen_code_dct(df, aoi_col, code_dct)
+
+            df[aoi_col] = df[aoi_col].apply(lambda x: code_dct[x])
+
+            if sep_col is not None:
                 df_lst = [y for x, y in df.groupby(sep_col)]
                 for df in df_lst:
-                    seq = sequence(df, aoi_col=aoi_col, off_aoi_str=off_aoi_str,**kwargs)
+                    seq = sequence(df, aoi_col=aoi_col, **kwargs)
                     seq_lst.append(seq)
                     length_lst.append(len(seq))
                     id_lst.append(f"{df[id_col].iloc[0]}_{df[sep_col].iloc[0]}")
-                
+
             else:
-                df = pd.read_csv(csv)
-                seq = sequence_csv(df, aoi_col=aoi_col, off_aoi_str=off_aoi_str, **kwargs)
+                seq = sequence(df, aoi_col=aoi_col, **kwargs)
                 length_lst.append(len(seq))
                 seq_lst.append(seq)
                 id_lst.append(f"{id_col[id_col].iloc[0]}")
