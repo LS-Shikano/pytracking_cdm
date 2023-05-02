@@ -42,6 +42,19 @@ def sequence(df: pd.DataFrame,  aoi_col: str, merge: bool = False, off_aoi_str: 
 
     return seq
 
+def gen_code_dct(df:pd.DataFrame, aoi_col:str, code_dct:dict,off_aoi_str: str= None):
+    uni_start = 35
+
+    if off_aoi_str != None:
+        code_dct[off_aoi_str]= chr(uni_start-1)
+
+    new_unique_aoi = [x for x in df[aoi_col].unique().tolist() if x not in code_dct.keys()]
+    lock = len(code_dct.keys())
+    if len(new_unique_aoi) != 0:
+        for lst_count,i in enumerate(new_unique_aoi):
+            code_dct[i] = chr(uni_start+lock+lst_count)
+    return code_dct
+
 
 def sequencer(folder: str, id_col: str, aoi_col:str, off_aoi_str: str = None, sep_col: str = None, **kwargs):
     """sequencer: converts a dataframe containing row wise fixations to a sequence
@@ -53,26 +66,17 @@ def sequencer(folder: str, id_col: str, aoi_col:str, off_aoi_str: str = None, se
     >>> from pytracking_cdm.sequencer import sequencer
     >>> sequencer("data/individual/")
     """
-    uni_start = 35
 
     seq_lst = []
     id_lst = []
     length_lst = []
-    unique_aoi = []
     code_dct = dict()
-    if off_aoi_str != None:
-        code_dct[off_aoi_str]= chr(uni_start-1)
     
     with os.scandir(folder) as it:
         for entry in it:
             df = pd.read_csv(entry.path)
-            
-            new_unique_aoi = [x for x in df[aoi_col].unique().tolist() if x not in unique_aoi]
-            if len(new_unique_aoi) != 0:
-                for lst_count,i in enumerate(new_unique_aoi):
-                    code_dct[i] = chr(uni_start+len(unique_aoi)+lst_count)
 
-            unique_aoi = unique_aoi + new_unique_aoi
+            code_dct = gen_code_dct(df, aoi_col, code_dct, off_aoi_str)
 
             df[aoi_col] = df[aoi_col].apply(lambda x : code_dct[x])
             
