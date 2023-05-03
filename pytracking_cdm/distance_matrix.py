@@ -1,18 +1,17 @@
 from itertools import combinations
 from scipy.spatial.distance import squareform
-
-# from datetime import datetime
-from Levenshtein import distance
-
-
-# https://stackoverflow.com/questions/46452724/string-distance-matrix-in-python-using-pdist
-# arr = np.array(lst).reshape(-1,1)
-# Y = pdist(arr, lambda x,y: nltk.edit_distance(x[0],y[0])) WAY SLOWER
-
-# https://maxbachmann.github.io/Levenshtein/levenshtein.html#distance
+from weighted_levenshtein import lev
+from pytracking_cdm.cost_matrix import gen_costs
 
 
-def distance_matrix(df, metric="distance", div_len=False):
+def distance_matrix(
+    df,
+    insert_costs_dct: dict = None,
+    delete_costs_dct: dict = None,
+    substitute_costs_dct: dict = None,
+    code_dct: dict = None,
+    div_len: bool = False,
+):
     """
 
     @param df:
@@ -23,25 +22,24 @@ def distance_matrix(df, metric="distance", div_len=False):
     if True, divide distance by length of longer sequence
     @return:
     """
+
     lst = df.seq.values.tolist()
-    # print("avg len of sequences:", df['len'].mean())
-    # t1 = datetime.now()
-    # print("starting distance matrix calculation", t1.strftime("%H:%M:%S"))
-    # will divide by length of longer sequence
-    # print(f"{metric}(i, j)")
+
+    insert_costs = gen_costs(1, insert_costs_dct, code_dct)
+    delete_costs = gen_costs(1, delete_costs_dct, code_dct)
+    substitute_costs = gen_costs(2, substitute_costs_dct, code_dct)
+
     if div_len:
-        distances = [distance(i, j) / max(len(i), len(j)) for (i, j) in combinations(lst, 2)]
+        distances = [
+            lev(i, j, insert_costs=insert_costs, delete_costs=delete_costs, substitute_costs=substitute_costs)
+            / max(len(i), len(j))
+            for (i, j) in combinations(lst, 2)
+        ]
     else:
-        distances = [distance(i, j) for (i, j) in combinations(lst, 2)]
-    # t2 = datetime.now()
-    # delta = t2 - t1
-    # print("done", t2.strftime("%H:%M:%S"), f"\n took \
-    #     {delta.total_seconds()} seconds ")
+        distances = [
+            lev(i, j, insert_costs=insert_costs, delete_costs=delete_costs, substitute_costs=substitute_costs)
+            for (i, j) in combinations(lst, 2)
+        ]
+
     distance_matrix = squareform(distances)
     return distance_matrix
-
-
-# seqs = sequencer(level=2,
-#           folder=f"Data/Labelled_Data/Individual_Ballots/Double/Fixations/AOI_Fixations/30ms")
-#
-# calc_dist_matr(seqs)

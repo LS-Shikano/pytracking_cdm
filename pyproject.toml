@@ -9,7 +9,7 @@ python = ">=3.10,<3.12"
 pandas = "^2.0.1"
 numpy = "^1.24.3"
 scipy = "^1.10.1"
-Levenshtein = "^0.21.0"
+weighted-levenshtein = "^0.2.2"
 
 [tool.poetry.group.test.dependencies]
 importlib-resources = "^5.12.0"

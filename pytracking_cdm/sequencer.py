@@ -39,14 +39,20 @@ def sequence(df: pd.DataFrame, aoi_col: str, merge: bool = False):
     return seq
 
 
-def gen_code_dct(df: pd.DataFrame, aoi_col: str, code_dct: dict):
-    uni_start = 35
+def ascii_to_char(code):
+    # Excluding control characters
+    if code < 33 or code > 126:
+        raise ValueError("Code must be between 33 and 126")
+    return chr(code)
 
+
+def gen_code_dct(df: pd.DataFrame, aoi_col: str, code_dct: dict):
+    uni_start = 33
     new_unique_aoi = [x for x in df[aoi_col].unique().tolist() if x not in code_dct.keys()]
     lock = len(code_dct.keys())
     if len(new_unique_aoi) != 0:
         for lst_count, i in enumerate(new_unique_aoi):
-            code_dct[i] = chr(uni_start + lock + lst_count)
+            code_dct[i] = ascii_to_char(uni_start + lock + lst_count)
     return code_dct
 
 
