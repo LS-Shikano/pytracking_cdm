@@ -1,26 +1,42 @@
 from itertools import combinations
+import pandas as pd
 from scipy.spatial.distance import squareform
 from weighted_levenshtein import lev
 from pytracking_cdm.cost_matrix import gen_costs
+import numpy as np
 
 
 def distance_matrix(
-    df,
+    df: pd.DataFrame,
     insert_costs_dct: dict = None,
     delete_costs_dct: dict = None,
     substitute_costs_dct: dict = None,
     code_dct: dict = None,
     div_len: bool = False,
-):
-    """
+) -> np.ndarray:
+    """distance_matrix: generates a matrix of levenshtein distances between all sequences pairs from a pandas dataframe
+    of one sequence per row
+    Params:
+    ------
+    df: pandas dataframe containing one sequence per row
+    insert_costs_dct: Optionally, a dictionary like this: {'"': 2}. A string as key and a insertion cost as value
+    delete_costs_dct: Optionally, a dictionary like this: {'"': 2}. A string as key and a deletion cost as value
+    substitute_costs_dct: Optionally, a dictionary like this: {'"': {"a": 1.25}}. A string as key and a dictionary as
+    value.
+    This dictionary should contain all other characters as keys and the cost of substituting the key of the parent
+    dictionary with the key of the nested dictionary as values
+    code_dct: If your sequences are encoded, but your cost dictionaries are not, also specify a code dictionary.
+    div_len: Optionally normalize the levenshtein distance by dividing the distance between two strings by the length of
+    the longer string
 
-    @param df:
-    dataframe containing one sequence per row
-    @param metric:
-    one of "distance","jaro" or "jaro_winkler"
-    @param div_len:
-    if True, divide distance by length of longer sequence
-    @return:
+    Returns:
+    ------
+    A pandas dataframe of one sequence per row per individual or trial, depending on params
+
+    Usage:
+    ------
+    >>> from pytracking_cdm.distance_matrix import distance_matrix
+    >>> sequencer("path/to/folder", id_col="subj", sep_col="trial", aoi_col="aoi")
     """
 
     lst = df.seq.values.tolist()

@@ -23,7 +23,7 @@ def test_sequence():
 def test_gen_code_dct():
     # empty code dict
     test_df1 = pd.DataFrame({"aoi": pd.Series([1, 2, 2, 2, 5, 6, 8, 8, 9], dtype="str")})
-    code_dct = gen_code_dct(test_df1, "aoi", {})
+    code_dct = gen_code_dct(test_df1, "aoi")
     assert code_dct == {"1": "!", "2": '"', "5": "#", "6": "$", "8": "%", "9": "&"}
     # filled code dict
     test_df2 = pd.DataFrame({"aoi": pd.Series([8, 8, 0, 0, 10, 11, 13, 1, 2], dtype="str")})
