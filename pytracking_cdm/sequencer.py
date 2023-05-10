@@ -93,15 +93,11 @@ def gen_code_dct(df: pd.DataFrame, aoi_col: str, code_dct: dict = {}) -> dict:
 
 
 def sequencer(
-    folder: str,
-    id_col: str,
-    aoi_col: str,
-    off_aoi_str: str = None,
-    sep_col: str = None,
-    **kwargs,
+    folder: str, id_col: str, aoi_col: str, off_aoi_str: str = None, sep_col: str = None, merge: bool = False
 ) -> pd.DataFrame:
     """sequencer: converts a folder of csv containing row wise fixations to a dataframe of one sequence per row per
     individual or trial
+
     Params:
     ------
     folder: Input folder containing one file of eyetracking data as csv per individual or trial.
@@ -109,14 +105,14 @@ def sequencer(
     aoi_col: Name of the column containing the label of the area of interest.
     off_aoi_str: Optional, exclude the AOIs with this label when generating the sequences. This is usually the label for
     a fixation that's not on an area of interest.
-    sep_col: Optional, a column that contains some category (for example trials) that should be treated as
-    separate sequences.
-    The outputted dataframe will contain one sequence per sep_col category and the id column will be appended by the
-    category.
+    sep_col: Optional, a column that contains some category (for example trials) that should be treated as separate
+    sequences. The outputted dataframe will contain one sequence per sep_col category and the id column will be appended
+    by the category.
 
     Returns:
     ------
-    A pandas dataframe of one sequence per row per individual or trial, depending on params
+    A pandas dataframe of one sequence per row per individual or trial, depending on params  and a dictionary with the
+    aoi labels as keys and their encoded sequence chars as values.
 
     Usage:
     ------
@@ -151,17 +147,21 @@ def sequencer(
                 for df in df_lst:
                     # for each df, generate a sequence, measure length of sequence and add both plus the id
                     # (appended by sep_col) to lists
-                    seq = sequence(df, aoi_col=aoi_col, **kwargs)
+                    seq = sequence(df, aoi_col=aoi_col, merge=merge)
                     seq_lst.append(seq)
                     length_lst.append(len(seq))
+                    # TODO handle same id/trial in different files
                     id_lst.append(f"{df[id_col].iloc[0]}_{df[sep_col].iloc[0]}")
 
             else:
                 # same as above but without appending id
-                seq = sequence(df, aoi_col=aoi_col, **kwargs)
+                seq = sequence(df, aoi_col=aoi_col, merge=merge)
                 length_lst.append(len(seq))
                 seq_lst.append(seq)
-                id_lst.append(f"{id_col[id_col].iloc[0]}")
+                # TODO handle same id in different files
+                id_lst.append(df[id_col].iloc[0])
 
     # generate pandas df out of the lists
-    return pd.DataFrame({"id": id_lst, "seq": seq_lst, "len": length_lst})
+    df = pd.DataFrame({"id": id_lst, "seq": seq_lst, "len": length_lst})
+    df.id = df.id.astype(str)
+    return df, code_dct
