@@ -112,7 +112,8 @@ def sequencer(
 
     # iterate over files in folder
     with os.scandir(folder) as it:
-        for entry in it:
+        # sort by name (mainly for testing)
+        for entry in sorted(it, key=lambda e: e.name):
             df = pd.read_csv(entry.path)
 
             # delete all rows containing off_aoi_str
