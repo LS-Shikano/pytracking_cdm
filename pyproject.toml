@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "pytracking-cdm"
+name = "pytracking_cdm"
 version = "0.0.1"
 description = "Processing eyetracking data for sequence analysis"
 authors = ["Jonas Stettner <jonas.stettner@uni-konstanz.de>"]
@@ -22,6 +22,8 @@ black = "^23.3.0"
 ruff = "^0.0.264"
 sphinx = "^7.0.0"
 piccolo-theme = "^0.15.0"
+sphinx-autodoc-typehints = "^1.23.0"
+pydocstyle = "^6.3.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -90,3 +92,7 @@ target-version = "py310"
 [tool.ruff.mccabe]
 # Unlike Flake8, default to a complexity level of 10.
 max-complexity = 10
+
+[tool.pydocstyle]
+convention = "numpy"
+match='(?!docs)'

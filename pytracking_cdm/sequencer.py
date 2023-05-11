@@ -1,3 +1,5 @@
+"""Functions related to generating sequences from eyetracking fixations."""
+
 import pandas as pd
 import os
 from typing import TypeVar
@@ -6,21 +8,18 @@ PandasDataFrame = TypeVar("pandas.core.frame.DataFrame")
 
 
 def sequence(df: pd.DataFrame, aoi_col: str, merge: bool = False) -> str:
-    """sequence: converts a pandas dataframe containing row wise fixations to a sequence
+    """Convert fixations to a single sequence.
+
     Params:
     ------
-    df: pandas dataframe containing row wise fixations
-    aoi_col: the column that contains the label of the fixation/area of interest
-    merge: Merge contiguous identical strings
+    df: Dataframe containing row wise fixations.
+    aoi_col: Column that contains the label of the fixation/area of interest.
+    merge: Merge contiguous identical strings.
 
-    Returns:
-    ------
-    A sequence string
+    Returns
+    -------
+    A sequence as a joined string.
 
-    Usage:
-    ------
-    >>> from pytracking_cdm.sequence_csv import sequence
-    >>> sequence("data/individual/inv_1.csv", "et_rois")
     """
     df[aoi_col] = df[aoi_col].astype(str)
 
@@ -41,19 +40,16 @@ def sequence(df: pd.DataFrame, aoi_col: str, merge: bool = False) -> str:
 
 
 def ascii_to_char(code: int) -> str:
-    """ascii_to_char: converts an integer (which equals asci code, but shifted by 33) to a character
+    """Convert an integer (which equals asci code, but shifted by 33) to a character.
+
     Params:
     ------
-    code: the asci code
+    code: The asci code.
 
-    Returns:
-    ------
-    An ASCII character as str
+    Returns
+    -------
+    An ASCII character .
 
-    Usage:
-    ------
-    >>> from pytracking_cdm.acii_to_char import ascii_to_char
-    >>> ascii_to_char(1)
     """
     # Excluding control characters
     start = 33
@@ -64,28 +60,24 @@ def ascii_to_char(code: int) -> str:
 
 
 def gen_code_dct(df: pd.DataFrame, aoi_col: str, code_dct: dict = {}) -> dict:
-    """gen_code_dct: generates or appends a dictionary that assigns existing AOI labels a one character code
+    """Generate or append a dictionary that assigns existing AOI labels a code in the form of an ASCII string.
 
     Params:
     ------
-    df: pandas dataframe containing row wise fixations
-    aoi_col: the column that contains the label of the area of interest
-    code_dct: Optionally input an existing code dictionary to append it
+    df: Dataframe containing row wise fixations.
+    aoi_col: Column that contains the label of the area of interest.
+    code_dct: Input an existing code dictionary to append it.
 
-    Returns:
-    ------
-    A dicionary with the aoi labels as keys and its encoding as values
+    Returns
+    -------
+    A dicionary with the AOI labels as keys and their encodings as values.
 
-    Usage:
-    ------
-    >>> from pytracking_cdm.gen_code_dct import gen_code_dct
-    >>> gen_code_dct(df, "aoi")
     """
     # get unique items that are not already in the code dictionary
     new_unique_aoi = [x for x in df[aoi_col].unique().tolist() if x not in code_dct.keys()]
     lock = len(code_dct.keys())
-    # if there are new items, iteratively add new items but shift the asci integer
-    # by the length of the old code dictionary
+    # if there are new items, iteratively add new items but shift the asci integer by the length of the old code
+    # dictionary
     if len(new_unique_aoi) != 0:
         for lst_count, i in enumerate(new_unique_aoi):
             code_dct[i] = ascii_to_char(lock + lst_count)
@@ -94,32 +86,25 @@ def gen_code_dct(df: pd.DataFrame, aoi_col: str, code_dct: dict = {}) -> dict:
 
 def sequencer(
     folder: str, id_col: str, aoi_col: str, off_aoi_str: str = None, sep_col: str = None, merge: bool = False
-) -> pd.DataFrame:
-    """sequencer: converts a folder of csv containing row wise fixations to a dataframe of one sequence per row per
-    individual or trial
+) -> [pd.DataFrame, dict]:
+    """Convert a folder of files containing row wise fixations to a dataframe of sequences.
 
     Params:
     ------
-    folder: Input folder containing one file of eyetracking data as csv per individual or trial.
+    folder: Input folder containing files of rowise fixations as csv per individual or trial.
     id_col: Name of the column containing the unique id of the individual or trial.
-    aoi_col: Name of the column containing the label of the area of interest.
-    off_aoi_str: Optional, exclude the AOIs with this label when generating the sequences. This is usually the label for
-    a fixation that's not on an area of interest.
-    sep_col: Optional, a column that contains some category (for example trials) that should be treated as separate
-    sequences. The outputted dataframe will contain one sequence per sep_col category and the id column will be appended
-    by the category.
+    aoi_col: Name of the column containing the AOI labels.
+    off_aoi_str: Exclude the AOIs with this label when generating the sequences. This is usually the label for a
+    fixation that's not on an area of interest.
+    sep_col: A column that contains some category (for example trials) that should be treated as separate sequences.
+    merge: Merge contiguous identical strings.
 
-    Returns:
+    Return
     ------
-    A pandas dataframe of one sequence per row per individual or trial, depending on params  and a dictionary with the
+    A pandas dataframe of one sequence per row per individual or trial, depending on params and a dictionary with the
     aoi labels as keys and their encoded sequence chars as values.
 
-    Usage:
-    ------
-    >>> from pytracking_cdm.sequencer import sequencer
-    >>> sequencer("path/to/folder", id_col="subj", sep_col="trial", aoi_col="aoi")
     """
-
     seq_lst = []
     id_lst = []
     length_lst = []
@@ -164,4 +149,4 @@ def sequencer(
     # generate pandas df out of the lists
     df = pd.DataFrame({"id": id_lst, "seq": seq_lst, "len": length_lst})
     df.id = df.id.astype(str)
-    return df, code_dct
+    return [df, code_dct]

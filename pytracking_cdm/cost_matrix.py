@@ -1,23 +1,28 @@
+"""Functions related to generating a cost_matrix."""
+
 import numpy as np
 
 
-def gen_costs(dim: int, dct: dict, code_dct: dict = None) -> np.ndarray:
-    """gen_costs: generates a matrix of costs
+def cost_matrix(dim: int, dct: dict, code_dct: dict = None) -> np.ndarray:
+    """Generate a matrix of costs.
 
     Params:
     ------
-    dim: whether the inputted dictionary is flat (delete costs or insert costs) or nestes (substitute costs)
-    dct: the dictionary containing the costs
-    code_dct: Optionally input a code dictionary if you want to encode the cost matrix
+    dim:
+        whether the inputted dictionary is flat (delete costs or insert costs) or nestes (substitute costs)
+    dct:
+        the dictionary containing the costs
+    code_dct:
+        Optionally input a code dictionary if you want to encode the cost matrix
 
-    Returns:
-    ------
+    Returns
+    -------
     A numpy 128 or 128 by 128 long 1 or 2 dim array. The indexes correspond to ASCII codes and the values to costs.
 
     Usage:
     ------
     >>> from pytracking_cdm.cost_matrix import cost_matrix
-    >>> gen_costs(1, {"1": 2}, code_dct)
+    >>> cost_matrix(1, {"1": 2}, code_dct)
     """
     if dim == 1:
         # 1 dim matrix of ones (standard cost). Length is 128 because of ASCII (all possible labels)

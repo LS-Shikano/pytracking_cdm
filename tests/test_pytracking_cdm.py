@@ -4,7 +4,7 @@ import numpy as np
 from pytracking_cdm import __version__
 from pytracking_cdm.sequencer import sequence, gen_code_dct, sequencer
 from pytracking_cdm.distance_matrix import distance_matrix
-from pytracking_cdm.cost_matrix import gen_costs
+from pytracking_cdm.cost_matrix import cost_matrix
 from pytracking_cdm import SeqAnaObj
 from weighted_levenshtein import lev
 
@@ -60,24 +60,24 @@ def test_sequencer():
     pd.testing.assert_frame_equal(df, seq)
 
 
-def test_gen_costs():
-    costs = gen_costs(1, {'"': 2})
+def test_cost_matrix():
+    costs = cost_matrix(1, {'"': 2})
     dist = lev("abc", 'ab"c', insert_costs=costs)
     assert dist == 2
-    costs = gen_costs(1, {'"': 2})
+    costs = cost_matrix(1, {'"': 2})
     dist = lev('abc"', "abc", delete_costs=costs)
     assert dist == 2
-    costs = gen_costs(2, {'"': {"a": 1.25}})
+    costs = cost_matrix(2, {'"': {"a": 1.25}})
     dist = lev('"bc', "abc", substitute_costs=costs)
     assert dist == 1.25
 
 
-def test_gen_costs_coded():
+def test_cost_matrix_coded():
     code_dct = {"1": '"', "2": "a"}
-    costs = gen_costs(1, {"1": 2}, code_dct)
+    costs = cost_matrix(1, {"1": 2}, code_dct)
     dist = lev("abc", 'ab"c', insert_costs=costs)
     assert dist == 2
-    costs = gen_costs(2, {"1": {"2": 1.25}}, code_dct)
+    costs = cost_matrix(2, {"1": {"2": 1.25}}, code_dct)
     dist = lev('"bc', "abc", substitute_costs=costs)
     assert dist == 1.25
 

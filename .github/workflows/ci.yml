@@ -1,5 +1,8 @@
 name: CI
-on: [pull_request,workflow_dispatch]
+on: 
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   ci:
@@ -27,4 +30,6 @@ jobs:
         run: poetry run black "pytracking_cdm"
       - name: Linting
         run: poetry run ruff pytracking_cdm
+      - name: enforcing docstrings
+        run: poetry run pydocstyle pytracking_cdm 
        
