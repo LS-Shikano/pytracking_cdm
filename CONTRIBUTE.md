@@ -1,4 +1,4 @@
-## Contribution
+# Contribution
 
 ### Git Branch Policies and CI
 Merging with main requires a pull request that has to pass a check defined in the ci.yml github workflow. The check ensures the code is formatted, linted, docstrings exist and are styles correctly and run tests. You can't push directly to main. Create a branch, then open a PR for merging with main. Tip: [You can create branches directly from issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-a-branch-for-an-issue).  
