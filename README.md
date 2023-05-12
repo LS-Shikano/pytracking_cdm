@@ -3,7 +3,7 @@ Package for internal use at the Center for Data and Methods. It contains tools f
 
 
 ## Documentation
-Documentation can be found [here](https://pytracking-cdm.onrender.com/).
+Documentation can be found [here](https://pytracking-cdm.onrender.com/)
 
 ## Contribute
 More Info [here](CONTRIBUTE.md)
