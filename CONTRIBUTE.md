@@ -13,9 +13,15 @@ poetry install
 ```
 3. Set up pre-commit hooks:
 ```bash
-poetry run pre-commit install
+poetry run pre-commit install --hook-type commit-msg
 ```
 This will ensure the code is formatted, linted, docstrings exist and are styled correctly and run tests. 
+
+### Commit messages
+Follow these guidelines: https://www.conventionalcommits.org/en/v1.0.0/
+- A fix commit is a PATCH. Example: 0.0.2 -> 0.0.3
+- A feat commit is a MINOR. Example: 0.1.0 -> 0.2.0
+- A commit with BREAKING CHANGE or ! is a MAJOR. 1.0.0 -> 2.0.0
 
 ### IDE requirements
 Install [Black](https://github.com/psf/black) for formatting tooltips and [Ruff](https://github.com/charliermarsh/ruff) for linting tooltips in your IDE.

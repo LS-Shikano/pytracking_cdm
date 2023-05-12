@@ -12,30 +12,27 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    concurrency: release
-
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
+        poetry-version: ["1.4.2"]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-      # check-out repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
+          python-version: ${{ matrix.python-version }}
           ref: ${{ github.head_ref }}
           token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
-      # install poetry
-      - name: Install poetry
-        run: pipx install poetry==1.2.0
-      # set-up python with cache
-      - name: Setup Python 3.10
-        uses: actions/setup-python@v4
+      - name: Run image
+        uses: abatilo/actions-poetry@v2
         with:
-          python-version: '3.10'
-          cache: 'poetry'
-      # install requirements
-      - name: Install requirements
+          poetry-version: ${{ matrix.poetry-version }}
+      - name: Install dependencies
         run: poetry install --only semver
-      # semantic release
       - name: Python Semantic Release
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}

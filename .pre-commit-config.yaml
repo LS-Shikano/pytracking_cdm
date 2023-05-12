@@ -1,10 +1,17 @@
 repos:
+
+-   repo: https://github.com/compilerla/conventional-pre-commit
+    rev: "v2.2.0"
+    hooks:
+    -   id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
 -   repo: https://github.com/psf/black
     rev: 23.3.0
     hooks:
     -   id: black
 -   repo: https://github.com/pycqa/pydocstyle
-    rev: 6.3.0  # pick a git hash / tag to point to
+    rev: 6.3.0 
     hooks:
     -   id: pydocstyle
         additional_dependencies: ['tomli']
