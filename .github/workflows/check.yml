@@ -1,11 +1,11 @@
-name: CI
+name: Check
 on: 
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 jobs:
-  ci:
+  check:
     strategy:
       fail-fast: false
       matrix:

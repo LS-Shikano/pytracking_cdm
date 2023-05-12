@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytracking_cdm"
-version = "0.0.1"
+version = "0.0.2"
 description = "Processing eyetracking data for sequence analysis"
 authors = ["University of Konstanz - Center for Data and Methods"]
 license = "MIT"
@@ -30,6 +30,10 @@ pydocstyle = "^6.3.0"
 [tool.poetry.group.doc.dependencies]
 piccolo-theme = "^0.15.0"
 sphinx = "^7.0.0"
+
+
+[tool.poetry.group.semver.dependencies]
+python-semantic-release = "^7.33.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -102,3 +106,16 @@ max-complexity = 10
 [tool.pydocstyle]
 convention = "numpy"
 match='(?!docs)'
+
+[tool.semantic_release]
+branch = "main"
+version_variable = "pytracking_cdm/__init__.py:__version__"
+version_toml = "pyproject.toml:tool.poetry.version"
+version_source = "tag"
+commit_version_number = true # required for version_source = "tag"
+tag_commit = true
+upload_to_pypi = false
+upload_to_release = false
+hvcs = "github" # gitlab is also supported
+commit_message = "{version} [skip ci]"
+
