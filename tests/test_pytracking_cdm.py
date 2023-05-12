@@ -9,10 +9,6 @@ from pytracking_cdm import SeqAnaObj
 from weighted_levenshtein import lev
 
 
-def test_version():
-    assert __version__ == "0.1.0"
-
-
 def test_sequence():
     df_1 = pd.DataFrame({"aoi": pd.Series([1, 2, 2, 2, 5, 6, 8, 8, 9], dtype="str")})
     seq = sequence(df_1, "aoi")
