@@ -28,9 +28,6 @@ exclude_patterns = []
 autodoc_typehints = "description"  # document types in description
 autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
 set_type_checking_flag = True  # Enable 'expensive' imports for sphinx_autodoc_typehints
-# autoapi_dirs = ['../../br_stimpy']
-# autoapi_add_toctree_entry = False
-# autoapi_template_dir = 'autoapi_templates'
 
 # autosummary
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
