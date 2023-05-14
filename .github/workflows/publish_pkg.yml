@@ -1,7 +1,6 @@
-name: Publish
+name: "Publish Package"
 on:
-  release:
-    types: [published]
+  workflow_call:
 permissions:
     contents: write
 jobs:
@@ -27,13 +26,9 @@ jobs:
       - name: Check
         run: poetry check
       - name: Set token
-        env: # Or as an environment variable
+        env: 
           credentials: ${{ secrets.PYPI_TOKEN }}
         run: poetry config pypi-token.pypi $PYPI_TOKEN
       - name: build and publish to pypi
         run: poetry publish --build 
-      - name: build and deploy documentation
-        env:
-          credentials: ${{secrets.DEPLO_HOOK}}
-        run: curl -X POST "https://api.render.com/deploy/srv-che4rge7avja5maqeo00?key=6PaxlSeZFjc"
-
+      
