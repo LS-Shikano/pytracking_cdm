@@ -24,9 +24,3 @@ jobs:
       - call-release-pipeline
     uses: ./.github/workflows/publish_doc.yml
     secrets: inherit
-  call-publish-pkg-pipeline:
-    name: "Publish Package"
-    needs: 
-      - call-release-pipeline
-    uses: ./.github/workflows/publish_pkg.yml
-    secrets: inherit

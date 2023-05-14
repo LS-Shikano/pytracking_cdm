@@ -1,4 +1,4 @@
-# pytracking-cdm
+# pytracking_cdm
 Package for internal use at the Center for Data and Methods. It contains tools for doing sequence analysis on eyetracking fixation data.
 
 

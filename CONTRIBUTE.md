@@ -48,4 +48,5 @@ Tests are defined in `./tests/test_pytracking_cdm.py`
 
 #### Sources
 - https://johschmidt42.medium.com/setting-up-python-projects-part-v-206df3c1e3d3
-- 
+- https://mestrak.com/blog/semantic-release-with-python-poetry-github-actions-20nn
+- https://nakamasato.medium.com/create-and-publish-your-first-python-package-a0af8a3b5e55
