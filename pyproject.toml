@@ -111,10 +111,12 @@ version_variable = [
     "pytracking_cdm/__init__.py:__version__",
     "pyproject.toml:version"
 ]
+version_source = "tag"
+commit_version_number = true 
 branch = "main"
-upload_to_pypi = false
-upload_to_release = true
-build_command = "pip install poetry && poetry build"
 tag_commit = true
+upload_to_pypi = false
+upload_to_release = false
 commit_message = "{version} [skip ci]"
+hvcs = "github" # gitlab is also supported
 
