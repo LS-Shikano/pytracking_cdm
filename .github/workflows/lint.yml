@@ -1,4 +1,4 @@
-name: Linting
+name: Lint
 on:
   pull_request:
     branches:
@@ -6,7 +6,7 @@ on:
   workflow_call:
 
 jobs:
-  check:
+  lint:
     strategy:
       fail-fast: false
       matrix:

@@ -1,6 +1,5 @@
 ---
 name: "Lint PR"
-
 on:
   pull_request_target:
     types:
@@ -8,7 +7,7 @@ on:
       - edited
       - synchronize
 jobs:
-  main:
+  lint_pr:
     name: Validate PR title
     runs-on: ubuntu-latest
     steps:
