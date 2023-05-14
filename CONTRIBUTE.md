@@ -3,7 +3,7 @@
 ### Git Branch Policies and CI
 Merging with main requires a pull request that has to pass a check defined in the ci.yml github workflow. The check ensures the code is formatted, linted, docstrings exist and are styles correctly and run tests. You can't push directly to main. Create a branch, then open a PR for merging with main. Tip: [You can create branches directly from issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-a-branch-for-an-issue).  
 
-### Dev Setup
+## Dev Setup
 
 This package is developed with poetry. Find installation instructions [here](https://python-poetry.org/docs/)
 1. Clone Repo
@@ -19,6 +19,9 @@ This will ensure the code is formatted, linted, docstrings exist and are styled 
 
 ### IDE requirements
 Install [Black](https://github.com/psf/black) for formatting tooltips and [Ruff](https://github.com/charliermarsh/ruff) for linting tooltips in your IDE.
+
+## Dev Workflow
+We are using the GitHub Flow specified [here](https://docs.github.com/en/get-started/quickstart/github-flow).
 
 ### Commit messages
 - Basic [git commit message guidelines](https://ec.europa.eu/component-library/v1.15.0/eu/docs/conventions/git/) apply

@@ -1,12 +1,11 @@
-name: Testing
+name: Test
 on:
   pull_request:
     branches:
       - main
   workflow_call:
-
 jobs:
-  check:
+  test:
     strategy:
       fail-fast: false
       matrix:
