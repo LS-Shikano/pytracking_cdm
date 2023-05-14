@@ -3,12 +3,7 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: [check]
-    types:
-    - completed
-    branches:
-    - main
+  workflow_call:
 
 jobs:
   release:

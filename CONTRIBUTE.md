@@ -17,21 +17,24 @@ poetry run pre-commit install --hook-type commit-msg
 ```
 This will ensure the code is formatted, linted, docstrings exist and are styled correctly and run tests. 
 
+### IDE requirements
+Install [Black](https://github.com/psf/black) for formatting tooltips and [Ruff](https://github.com/charliermarsh/ruff) for linting tooltips in your IDE.
+
 ### Commit messages
-Follow these guidelines: https://www.conventionalcommits.org/en/v1.0.0/
-- A fix commit is a PATCH. Example: 0.0.2 -> 0.0.3
+- Basic [git commit message guidelines](https://ec.europa.eu/component-library/v1.15.0/eu/docs/conventions/git/) apply
+- Additionally, follow the [Conventional Commits specification](https://www.conventionalcommits.org/en/v1.0.0/)
+- A fix commit is a PATCH. Example: 0.0.21 -> 0.0.22
 - A feat commit is a MINOR. Example: 0.1.0 -> 0.2.0
 - A commit with BREAKING CHANGE or ! is a MAJOR. 1.0.0 -> 2.0.0
 
-### IDE requirements
-Install [Black](https://github.com/psf/black) for formatting tooltips and [Ruff](https://github.com/charliermarsh/ruff) for linting tooltips in your IDE.
+### Versioning
+- We are following this specification for versioning: [SemVer](https://semver.org/)
 
 ### Code documentation
 This project uses [pydocstyle](https://github.com/PyCQA/pydocstyle) to enforce the existance and style of docstrings. [NumPys style guidelines](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard) is used. To check whether your docstrings are consistent with these guidelines, run:
 ```bash
 poetry run pydocstyle ./pytracking_cdm
 ```
-
 ### Testing 
 To test ensure the package functions as intended after making changes, run:
 ```bash
@@ -39,5 +42,7 @@ poetry run pytest -svv
 ```
 Tests are defined in `./tests/test_pytracking_cdm.py`
 
-### Versioning
-https://johschmidt42.medium.com/setting-up-python-projects-part-v-206df3c1e3d3
+
+#### Sources
+- https://johschmidt42.medium.com/setting-up-python-projects-part-v-206df3c1e3d3
+- 
