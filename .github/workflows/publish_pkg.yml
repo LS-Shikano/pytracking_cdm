@@ -1,6 +1,7 @@
 name: "Publish Package"
 on:
-  workflow_call:
+  release:
+    types: [published]
 permissions:
     contents: write
 jobs:
@@ -25,10 +26,22 @@ jobs:
         run: poetry install 
       - name: Check
         run: poetry check
-      - name: Set token
-        env: 
-          credentials: ${{ secrets.PYPI_TOKEN }}
-        run: poetry config pypi-token.pypi $PYPI_TOKEN
-      - name: build and publish to pypi
-        run: poetry publish --build 
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.secrets.PYPI_TEST_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+      - name: Test install from TestPyPI
+        run: |
+            pip install \
+            --index-url https://test.pypi.org/simple/ \
+            --extra-index-url https://pypi.org/simple \
+            pytesting_cdm
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
+
       
