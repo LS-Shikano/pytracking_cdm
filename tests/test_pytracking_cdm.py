@@ -1,7 +1,6 @@
 from importlib_resources import files
 import pandas as pd
 import numpy as np
-from pytracking_cdm import __version__
 from pytracking_cdm.sequencer import sequence, gen_code_dct, sequencer
 from pytracking_cdm.distance_matrix import distance_matrix
 from pytracking_cdm.cost_matrix import cost_matrix
