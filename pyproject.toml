@@ -117,6 +117,5 @@ branch = "main"
 tag_commit = true
 upload_to_pypi = false
 upload_to_release = false
-commit_message = "{version} [skip ci]"
-hvcs = "github" # gitlab is also supported
+
 
