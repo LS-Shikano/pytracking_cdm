@@ -30,6 +30,8 @@ jobs:
           poetry-version: ${{ matrix.poetry-version }}
       - name: Install dependencies
         run: poetry install 
+      - name: Build
+        run: poetry build
       - name: Check
         run: poetry check
       - name: Publish to PyPI
