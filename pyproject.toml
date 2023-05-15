@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pytracking_cdm"
-version = "0.0.1"
+version = "0.1.0"
 description = "Processing eyetracking data for sequence analysis"
 authors = ["University of Konstanz - Center for Data and Methods"]
 license = "MIT"
