@@ -34,7 +34,7 @@ We are using the GitHub Flow specified [here](https://docs.github.com/en/get-sta
 - We are following this specification for versioning: [SemVer](https://semver.org/)
 
 ### Code documentation
-This project uses [pydocstyle](https://github.com/PyCQA/pydocstyle) to enforce the existance and style of docstrings. [NumPys style guidelines](https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard) is used. To check whether your docstrings are consistent with these guidelines, run:
+This project uses [pydocstyle](https://github.com/PyCQA/pydocstyle) to enforce the existance and style of docstrings. [Googles style guidelines](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) are used. To check whether your docstrings are consistent with these guidelines, run:
 ```bash
 poetry run pydocstyle ./pytracking_cdm
 ```

@@ -99,7 +99,7 @@ def sequencer(
     sep_col: A column that contains some category (for example trials) that should be treated as separate sequences.
     merge: Merge contiguous identical strings.
 
-    Return
+    Return:
     ------
     A pandas dataframe of one sequence per row per individual or trial, depending on params and a dictionary with the
     aoi labels as keys and their encoded sequence chars as values.
