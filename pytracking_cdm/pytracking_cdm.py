@@ -43,10 +43,10 @@ class SeqAnaObj:
         temp = sequencer(
             folder=folder, id_col=id_col, aoi_col=aoi_col, off_aoi_str=off_aoi_str, sep_col=sep_col, merge=merge
         )
-        self.seq_df: pd.DataFrame = temp[0]
-        self.code_dct: dict = temp[1]
-        self.distance_matrix: np.ndarray = distance_matrix(
-            self.seq_df,
+        self._seq_df: pd.DataFrame = temp[0]
+        self._code_dct: dict = temp[1]
+        self._distance_matrix: np.ndarray = distance_matrix(
+            self._seq_df,
             insert_costs_dct=insert_costs_dct,
             delete_costs_dct=delete_costs_dct,
             substitute_costs_dct=substitute_costs_dct,
