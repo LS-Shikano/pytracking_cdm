@@ -60,11 +60,11 @@ class SeqAnaObj:
         return self._seq_df
     
     @property
-    def code_dct(self) -> pd.DataFrame:
+    def code_dct(self) -> dict:
         """Dictionary with the AOI labels as keys and their encoded sequence chars as values."""
         return self._code_dct
     
     @property
-    def distance_matrix(self) -> pd.DataFrame:
+    def distance_matrix(self) -> np.ndarray:
         """A matrix of levenshtein distances.."""
         return self._distance_matrix
