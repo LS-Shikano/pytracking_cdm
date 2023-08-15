@@ -16,7 +16,7 @@ class SeqAnaObj:
         id_col: Name of the column containing the unique id of the individual or trial.
         aoi_col: Name of the column containing the AOI labels.
         off_aoi_str: Exclude the AOIs with this label when generating the sequences. This is usually the label for a 
-        fixation that's not on an area of interest.
+            fixation that's not on an area of interest.
         sep_col: A column that contains some category (for example trials) that should be treated as separate sequences.
         merge: Merge contiguous identical strings.
         normalize: Optionally normalize the levenshtein distance by dividing the distance between two strings by the 
