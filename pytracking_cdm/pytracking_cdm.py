@@ -20,7 +20,7 @@ class SeqAnaObj:
         sep_col: A column that contains some category (for example trials) that should be treated as separate sequences.
         merge: Merge contiguous identical strings.
         normalize: Optionally normalize the levenshtein distance by dividing the distance between two strings by the 
-        length of the longer string
+            length of the longer string
         insert_costs_dct: A dictionary like this: {'label_one': 2}. A string as key and a insertion cost as value.
         delete_costs_dct: A dictionary like this: {'label_one': 2}. A string as key and a deletion cost as value.
         substitute_costs_dct: A dictionary like this: {'label_one': {"label_two": 1.25}}. The top level dictionary 
