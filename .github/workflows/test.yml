@@ -25,4 +25,4 @@ jobs:
       - name: Install dependencies
         run: poetry install 
       - name: Testing
-        run: poetry run pytest -sv
+        run: poetry run pytest tests/test_pytracking_cdm.py -sv

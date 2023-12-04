@@ -1,4 +1,3 @@
-from importlib_resources import files
 import pandas as pd
 import numpy as np
 from pytracking_cdm.sequencer import sequence, gen_code_dct, sequencer
@@ -8,54 +7,32 @@ from pytracking_cdm import SeqAnaObj
 from weighted_levenshtein import lev
 
 
-def test_sequence():
-    df_1 = pd.DataFrame({"aoi": pd.Series([1, 2, 2, 2, 5, 6, 8, 8, 9], dtype="str")})
-    seq = sequence(df_1, "aoi")
-    assert seq == "122256889"
-    seq = sequence(df_1, "aoi", merge=True)
+def test_a_sequence(df_a, seq_a):
+    seq = sequence(df_a, "aoi")
+    assert seq == seq_a
+    seq = sequence(df_a, "aoi", merge=True)
     assert seq == "125689"
 
 
-def test_gen_code_dct():
+def test_b_gen_code_dct(df_b, df_b_2, dct_b, dct_b_2):
     # empty code dict
-    df_1 = pd.DataFrame({"aoi": pd.Series([1, 2, 2, 2, 5, 6, 8, 8, 9], dtype="str")})
-    code_dct = gen_code_dct(df_1, "aoi")
-    assert code_dct == {"1": "!", "2": '"', "5": "#", "6": "$", "8": "%", "9": "&"}
+    code_dct = gen_code_dct(df_b, "aoi")
+    assert code_dct == dct_b
     # filled code dict
-    df_2 = pd.DataFrame({"aoi": pd.Series([8, 8, 0, 0, 10, 11, 13, 1, 2], dtype="str")})
-    code_dct = gen_code_dct(df_2, "aoi", code_dct)
-    assert code_dct == {
-        "1": "!",
-        "2": '"',
-        "5": "#",
-        "6": "$",
-        "8": "%",
-        "9": "&",
-        "0": "'",
-        "10": "(",
-        "11": ")",
-        "13": "*",
-    }
+    code_dct = gen_code_dct(df_b_2, "aoi", code_dct)
+    assert code_dct == dct_b_2
 
-
-def test_sequencer():
-    df = pd.DataFrame(
-        {
-            "id": pd.Series(["1_1", "1_2", "1_3", "2_1", "2_2", "2_3"], dtype="str"),
-            "seq": pd.Series(['!""', '"#$', "%&&", "''(", "()!", '!""'], dtype="str"),
-            "len": pd.Series([3, 3, 3, 3, 3, 3], dtype="int"),
-        }
-    )
+def test_c_sequencer(df_c, path_c):
     seq = sequencer(
-        files("tests.data.simple.trial_sep")._paths[0],
+        path_c,
         id_col="subj",
         sep_col="trial",
         aoi_col="aoi",
     )[0]
-    pd.testing.assert_frame_equal(df, seq)
+    pd.testing.assert_frame_equal(df_c, seq)
 
 
-def test_cost_matrix():
+def test_d_cost_matrix():
     costs = cost_matrix(1, {'"': 2})
     dist = lev("abc", 'ab"c', insert_costs=costs)
     assert dist == 2
@@ -67,7 +44,7 @@ def test_cost_matrix():
     assert dist == 1.25
 
 
-def test_cost_matrix_coded():
+def test_e_cost_matrix_coded():
     code_dct = {"1": '"', "2": "a"}
     costs = cost_matrix(1, {"1": 2}, code_dct)
     dist = lev("abc", 'ab"c', insert_costs=costs)
@@ -77,58 +54,19 @@ def test_cost_matrix_coded():
     assert dist == 1.25
 
 
-def test_distance_matrix():
-    arr = [
-        [0, 1, 2, 1],
-        [1, 0, 2, 2],
-        [2, 2, 0, 3],
-        [1, 2, 3, 0],
-    ]
-    arr = np.array([np.array(xi) for xi in arr])
-
-    df = pd.DataFrame(
-        {
-            "id": pd.Series(["1_1", "1_2", "1_3", "1_4"], dtype="str"),
-            "seq": pd.Series(["abc", 'ab"c', 'abc""', '"bc'], dtype="str"),
-            "len": pd.Series([3, 3, 3, 3], dtype="int"),
-        }
-    )
-    dm = distance_matrix(df)
-
-    np.testing.assert_array_equal(arr, dm)
+def test_f_distance_matrix(arr_f, df_f):
+    dm = distance_matrix(df_f)
+    np.testing.assert_array_equal(arr_f, dm)
 
 
-def test_SeqAnaObj():
-    df = pd.DataFrame(
-        {
-            "id": pd.Series(["1", "2", "3", "4"], dtype="str"),
-            "seq": pd.Series(['!!!"', '"!"#!', "!$%%&", '!!!"$'], dtype="str"),
-            "len": pd.Series([4, 5, 5, 5], dtype="int"),
-        }
-    )
-    code_dct = {
-        "label_one": "!",
-        "label_two": '"',
-        "label_four": "#",
-        "label_six": "$",
-        "label_seven": "%",
-        "label_nine": "&",
-    }
-
-    arr = [
-        [0, 4, 4, 1],
-        [4, 0, 5, 4],
-        [4, 5, 0, 4],
-        [1, 4, 4, 0],
-    ]
-    arr = np.array([np.array(xi) for xi in arr])
-
+def test_g_SeqAnaObj(df_g, dct_g, arr_g, path_g):
+    
     obj = SeqAnaObj(
-        files("tests.data.simple.ind")._paths[0],
+        path_g,
         id_col="subj",
         aoi_col="aoi",
     )
 
-    pd.testing.assert_frame_equal(df, obj.seq_df)
-    assert code_dct == obj.code_dct
-    np.testing.assert_array_equal(obj.distance_matrix, arr)
+    pd.testing.assert_frame_equal(df_g, obj.seq_df)
+    assert dct_g == obj.code_dct
+    np.testing.assert_array_equal(obj.distance_matrix, arr_g)
