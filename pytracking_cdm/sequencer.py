@@ -116,10 +116,16 @@ def sequencer(
         for entry in sorted(it, key=lambda e: e.name):
             df = pd.read_csv(entry.path)
 
+            #check if id_col, aoi_col, sep_col exist, raise error if not
+            assert id_col in df.columns, f"'{id_col}' column does not exist in '{entry.name}'."
+            assert aoi_col in df.columns, f"'{aoi_col}' column does not exist in '{entry.name}'."
+            if sep_col is not None:
+                assert sep_col in df.columns, f"'{sep_col}' column does not exist in '{entry.name}'."
+            
             # delete all rows containing off_aoi_str
             if off_aoi_str is not None:
                 df = df[df[aoi_col] != off_aoi_str]
-
+            
             # generate or append a code dictionary
             code_dct = gen_code_dct(df, aoi_col, code_dct)
 
