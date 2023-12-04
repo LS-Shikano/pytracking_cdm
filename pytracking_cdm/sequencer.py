@@ -95,7 +95,8 @@ def sequencer(
     id_col: Name of the column containing the unique id of the individual or trial.
     aoi_col: Name of the column containing the AOI labels.
     off_aoi_str: Exclude the AOIs with this label when generating the sequences. This is usually the label for a
-    fixation that's not on an area of interest.
+    fixation that's not on an area of interest. If this is "nan", it treats missing values as off_aoi labels and deletes
+    them. Default for missing values is to include them as off aoi labels.
     sep_col: A column that contains some category (for example trials) that should be treated as separate sequences.
     merge: Merge contiguous identical strings.
 
@@ -124,7 +125,16 @@ def sequencer(
             
             # delete all rows containing off_aoi_str
             if off_aoi_str is not None:
+                if off_aoi_str == "nan":
+                    df = df[df[aoi_col].notna()]
                 df = df[df[aoi_col] != off_aoi_str]
+                assert df[aoi_col].notna().all(), f"Unhandled missing values in '{entry.name}'. There are missing \
+values and off_aoi labels when there should be either missing values that are treated as off aoi label or a specified \
+off_aoi label to 'nan' or remove missing values."
+            else:
+                # convert missing values to off_aoi
+                df[aoi_col] = df[aoi_col].fillna("off_aoi")
+
             
             # generate or append a code dictionary
             code_dct = gen_code_dct(df, aoi_col, code_dct)

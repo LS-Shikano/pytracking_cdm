@@ -11,5 +11,6 @@ def test_g_SeqAnaObj(path_real_data):
         path_real_data,
         id_col="participant_id",
         aoi_col="row_label",
+        off_aoi_str="nan"
     )
 
