@@ -55,7 +55,7 @@ def test_e_cost_matrix_coded():
 
 
 def test_f_distance_matrix(arr_f, df_f):
-    dm = distance_matrix(df_f)
+    dm = distance_matrix(df_f, processes=2)
     np.testing.assert_array_equal(arr_f, dm)
 
 

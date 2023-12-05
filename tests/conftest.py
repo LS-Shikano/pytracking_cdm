@@ -120,3 +120,10 @@ def arr_g():
 @pytest.fixture
 def path_g():
     return files("tests.data.simple.ind")._paths[0]
+
+
+@pytest.fixture
+def path_real_data():
+    return files("tests.data.real_data")._paths[0]
+
+
