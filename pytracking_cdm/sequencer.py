@@ -1,6 +1,7 @@
 """Functions related to generating sequences from eyetracking fixations."""
 
 import pandas as pd
+from tqdm import tqdm
 import os
 from typing import TypeVar
 
@@ -114,54 +115,60 @@ def sequencer(
     # iterate over files in folder
     with os.scandir(folder) as it:
         # sort by name (mainly for testing)
-        for entry in sorted(it, key=lambda e: e.name):
-            df = pd.read_csv(entry.path)
+        file_lst = sorted(it, key=lambda e: e.name)
+        with tqdm(total=len(file_lst)) as pbar:
+            for entry in file_lst:
+                pbar.update(1)
+                # check if csv file
+                if not entry.name.endswith(".csv"):
+                    continue
+                df = pd.read_csv(entry.path)
 
-            #check if id_col, aoi_col, sep_col exist, raise error if not
-            assert id_col in df.columns, f"'{id_col}' column does not exist in '{entry.name}'."
-            assert aoi_col in df.columns, f"'{aoi_col}' column does not exist in '{entry.name}'."
-            if sep_col is not None:
-                assert sep_col in df.columns, f"'{sep_col}' column does not exist in '{entry.name}'."
-            
-            # delete all rows containing off_aoi_str
-            if off_aoi_str is not None:
-                if off_aoi_str == "nan":
-                    df = df[df[aoi_col].notna()]
-                df = df[df[aoi_col] != off_aoi_str]
-                assert df[aoi_col].notna().all(), f"Unhandled missing values in '{entry.name}'. There are missing \
-values and off_aoi labels when there should be either missing values that are treated as off aoi label or a specified \
-off_aoi label to 'nan' or remove missing values."
-            else:
-                # convert missing values to off_aoi
-                df[aoi_col] = df[aoi_col].fillna("off_aoi")
+                #check if id_col, aoi_col, sep_col exist, raise error if not
+                assert id_col in df.columns, f"'{id_col}' column does not exist in '{entry.name}'."
+                assert aoi_col in df.columns, f"'{aoi_col}' column does not exist in '{entry.name}'."
+                if sep_col is not None:
+                    assert sep_col in df.columns, f"'{sep_col}' column does not exist in '{entry.name}'."
+                
+                # delete all rows containing off_aoi_str
+                if off_aoi_str is not None:
+                    if off_aoi_str == "nan":
+                        df = df[df[aoi_col].notna()]
+                    df = df[df[aoi_col] != off_aoi_str]
+                    assert df[aoi_col].notna().all(), f"Unhandled missing values in '{entry.name}'. There are missing \
+    values and off_aoi labels when there should be either missing values that are treated as off aoi label or a specified \
+    off_aoi label to 'nan' or remove missing values."
+                else:
+                    # convert missing values to off_aoi
+                    df[aoi_col] = df[aoi_col].fillna("off_aoi")
 
-            
-            # generate or append a code dictionary
-            code_dct = gen_code_dct(df, aoi_col, code_dct)
+                
+                # generate or append a code dictionary
+                code_dct = gen_code_dct(df, aoi_col, code_dct)
 
-            # convert the aoi_col to the encoded chars
-            df[aoi_col] = df[aoi_col].apply(lambda x: code_dct[x])
+                # convert the aoi_col to the encoded chars
+                df[aoi_col] = df[aoi_col].apply(lambda x: code_dct[x])
 
-            # if a file should not be into sep. sequences
-            if sep_col is not None:
-                # generare a list of sep. dfs corresponding to sep_col
-                df_lst = [y for x, y in df.groupby(sep_col)]
-                for df in df_lst:
-                    # for each df, generate a sequence, measure length of sequence and add both plus the id
-                    # (appended by sep_col) to lists
+                # if a file should not be into sep. sequences
+                if sep_col is not None:
+                    # generare a list of sep. dfs corresponding to sep_col
+                    df_lst = [y for x, y in df.groupby(sep_col)]
+                    for df in df_lst:
+                        # for each df, generate a sequence, measure length of sequence and add both plus the id
+                        # (appended by sep_col) to lists
+                        seq = sequence(df, aoi_col=aoi_col, merge=merge)
+                        seq_lst.append(seq)
+                        length_lst.append(len(seq))
+                        # TODO handle same id/trial in different files
+                        id_lst.append(f"{df[id_col].iloc[0]}_{df[sep_col].iloc[0]}")
+
+                else:
+                    # same as above but without appending id
                     seq = sequence(df, aoi_col=aoi_col, merge=merge)
-                    seq_lst.append(seq)
                     length_lst.append(len(seq))
-                    # TODO handle same id/trial in different files
-                    id_lst.append(f"{df[id_col].iloc[0]}_{df[sep_col].iloc[0]}")
-
-            else:
-                # same as above but without appending id
-                seq = sequence(df, aoi_col=aoi_col, merge=merge)
-                length_lst.append(len(seq))
-                seq_lst.append(seq)
-                # TODO handle same id in different files
-                id_lst.append(df[id_col].iloc[0])
+                    seq_lst.append(seq)
+                    # TODO handle same id in different files
+                    id_lst.append(df[id_col].iloc[0])
 
     # generate pandas df out of the lists
     df = pd.DataFrame({"id": id_lst, "seq": seq_lst, "len": length_lst})

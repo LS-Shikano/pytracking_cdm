@@ -3,6 +3,7 @@
 from pytracking_cdm.sequencer import sequencer
 from pytracking_cdm.distance_matrix import distance_matrix
 import pandas as pd
+import multiprocessing
 import numpy as np
 
 
@@ -26,6 +27,8 @@ class SeqAnaObj:
         substitute_costs_dct: A dictionary like this: {'label_one': {"label_two": 1.25}}. The top level dictionary 
             should contain the AOI labels as keys and dictionaries as values. The nested dictionaries should contain the
             aoi label to substitute as their keys and the cost of substitution as their values.
+        threads: Number of threads to use for multiprocessing. Multiprocessing is use for computing the distance
+            matrix. By default, the number of threads is set to the number of CPUs.
     """
     def __init__(
         self,
@@ -39,14 +42,21 @@ class SeqAnaObj:
         insert_costs_dct: dict = None,
         delete_costs_dct: dict = None,
         substitute_costs_dct: dict = None,
+        processes: int = None,
     ):
+        print("\n Converting files to sequences... \n")
         temp = sequencer(
             folder=folder, id_col=id_col, aoi_col=aoi_col, off_aoi_str=off_aoi_str, sep_col=sep_col, merge=merge
         )
+
         self._seq_df: pd.DataFrame = temp[0]
         self._code_dct: dict = temp[1]
+        print("\n Generating distance matrix... \n")
+        if processes is None:
+            processes = multiprocessing.cpu_count()
         self._distance_matrix: np.ndarray = distance_matrix(
-            self._seq_df,
+            self._seq_df,   
+            processes=processes,
             insert_costs_dct=insert_costs_dct,
             delete_costs_dct=delete_costs_dct,
             substitute_costs_dct=substitute_costs_dct,
