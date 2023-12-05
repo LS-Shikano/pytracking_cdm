@@ -16,20 +16,21 @@ class SeqAnaObj:
         folder: Input folder containing files of rowise fixations as csv per individual or trial.
         id_col: Name of the column containing the unique id of the individual or trial.
         aoi_col: Name of the column containing the AOI labels.
-        off_aoi_str: Exclude the AOIs with this label when generating the sequences. This is usually the label for a 
+        off_aoi_str: Exclude the AOIs with this label when generating the sequences. This is usually the label for a
             fixation that's not on an area of interest.
         sep_col: A column that contains some category (for example trials) that should be treated as separate sequences.
         merge: Merge contiguous identical strings.
-        normalize: Optionally normalize the levenshtein distance by dividing the distance between two strings by the 
+        normalize: Optionally normalize the levenshtein distance by dividing the distance between two strings by the
             length of the longer string
         insert_costs_dct: A dictionary like this: {'label_one': 2}. A string as key and a insertion cost as value.
         delete_costs_dct: A dictionary like this: {'label_one': 2}. A string as key and a deletion cost as value.
-        substitute_costs_dct: A dictionary like this: {'label_one': {"label_two": 1.25}}. The top level dictionary 
+        substitute_costs_dct: A dictionary like this: {'label_one': {"label_two": 1.25}}. The top level dictionary
             should contain the AOI labels as keys and dictionaries as values. The nested dictionaries should contain the
             aoi label to substitute as their keys and the cost of substitution as their values.
-        threads: Number of threads to use for multiprocessing. Multiprocessing is use for computing the distance
-            matrix. By default, the number of threads is set to the number of CPUs.
+        processes: Number of processes to use for multiprocessing. Multiprocessing is use for computing the distance
+            matrix. By default, the number of processes is set to the number of CPU cores.
     """
+
     def __init__(
         self,
         folder: str,
@@ -55,7 +56,7 @@ class SeqAnaObj:
         if processes is None:
             processes = multiprocessing.cpu_count()
         self._distance_matrix: np.ndarray = distance_matrix(
-            self._seq_df,   
+            self._seq_df,
             processes=processes,
             insert_costs_dct=insert_costs_dct,
             delete_costs_dct=delete_costs_dct,
@@ -63,17 +64,17 @@ class SeqAnaObj:
             code_dct=self.code_dct,
             normalize=normalize,
         )
-    
+
     @property
     def seq_df(self) -> pd.DataFrame:
         """Dataframe of one sequence per row per individual or trial, depending on params."""
         return self._seq_df
-    
+
     @property
     def code_dct(self) -> dict:
         """Dictionary with the AOI labels as keys and their encoded sequence chars as values."""
         return self._code_dct
-    
+
     @property
     def distance_matrix(self) -> np.ndarray:
         """A matrix of levenshtein distances.."""
